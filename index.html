@@ -2,32 +2,30 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>KIAMBER ENGINE - REPRO</title>
-  <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet">
+  <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
 </head>
 <body style="background:#000; margin:0;">
+  <video id="kiamber-pro" class="video-js vjs-default-skin vjs-16-9" controls></video>
 
-  <video id="player" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls></video>
-
-  <script src="https://unpkg.com/video.js@7/dist/video.min.js"></script>
+  <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
   <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.js"></script>
 
   <script>
-    var player = videojs('player');
+    var player = videojs('kiamber-pro');
 
-    // AQUÍ ESTÁ EL TRUCO QUE USAN ELLOS
     player.ready(function() {
-      // Forzamos a que el motor HLS use nuestro "disfraz"
+      // FUNDAMENTO: Interceptamos la petición antes de que salga al servidor
       this.tech().hls.xhr.beforeRequest = function(options) {
         options.headers = options.headers || {};
-        // Decimos que venimos de Vimeos
+        // Esto es lo que hace que el servidor crea que somos ellos
         options.headers['Referer'] = 'https://vimeos.net/';
+        // Importante: Eliminar cualquier rastro de GitHub
+        delete options.headers['Origin']; 
         return options;
       };
 
-      // CARGA EL VIDEO (¡OJO! Asegúrate de que el Token sea nuevo)
       player.src({
-        src: 'TU_NUEVO_LINK_M3U8_AQUI',
+        src: 'https://vimeos.zip/hls2/03/00007/aibs2c6nsy1h_n/index-v1-a1.m3u8?t=L8cqSIlKhFUyWWAhl-KDIy3DwsU8IHdIV9D2V9mDyVM&s=1773705159&e=43200&v=144257285&srv=s14&i=0.3&sp=0&r=e',
         type: 'application/x-mpegURL'
       });
     });
