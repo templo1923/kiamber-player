@@ -1,17 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>KIAMBER VIP STREAM</title>
-    <style>
-        body { margin: 0; padding: 0; background: #000; overflow: hidden; }
-        iframe { width: 100vw; height: 100vh; border: none; }
-    </style>
+  <meta charset="utf-8">
+  <title>KIAMBER VIP | GitHub Engine</title>
+  <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
 </head>
-<body>
-    <iframe 
-        src="https://hlsplayer.net/embed?type=m3u8&src=https%3A%2F%2Fvimeos.zip%2Fhls2%2F03%2F00007%2Faibs2c6nsy1h_n%2Findex-v1-a1.m3u8%3Ft%3DL8cqSIlKhFUyWWAhl-KDIy3DwsU8IHdIV9D2V9mDyVM%26s%3D1773705159%26e%3D43200%26v%3D144257285%26srv%3Ds14%26i%3D0.3%26sp%3D0%26r%3De" 
-        allowfullscreen>
-    </iframe>
+<body style="background:#000; margin:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+
+  <div style="width:100%; max-width:960px;">
+    <video id="kiamber-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto">
+      <source src="https://vimeos.zip/hls2/03/00007/aibs2c6nsy1h_n/index-v1-a1.m3u8?t=L8cqSIlKhFUyWWAhl-KDIy3DwsU8IHdIV9D2V9mDyVM&s=1773705159&e=43200&v=144257285&srv=s14&i=0.3&sp=0&r=e" type="application/x-mpegURL">
+    </video>
+  </div>
+
+  <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+  <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.js"></script>
+
+  <script>
+    (function() {
+      var player = videojs('kiamber-video');
+
+      player.ready(function() {
+        // Esta es la configuración técnica que maneja el repo de GitHub para HLS
+        // Engañamos al sistema para que crea que el Referer es Vimeos
+        this.tech().hls.xhr.beforeRequest = function(options) {
+          options.headers = options.headers || {};
+          options.headers['Referer'] = 'https://vimeos.net/';
+          return options;
+        };
+
+        this.play().catch(function(e) {
+            console.log("Esperando interacción del usuario...");
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
