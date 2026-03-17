@@ -2,28 +2,34 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <title>KIAMBER VIP ENGINE</title>
   <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
+  <style>
+    body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .video-js { width: 100%; max-width: 800px; }
+  </style>
 </head>
-<body style="background:#000; margin:0;">
-  <video id="kiamber-pro" class="video-js vjs-default-skin vjs-16-9" controls></video>
+<body>
+
+  <video id="repro_kiamber" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls></video>
 
   <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
-  <script src="https://unpkg.com/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.js"></script>
+  
+  <script src="src/videojs-contrib-hls.js"></script>
 
   <script>
-    var player = videojs('kiamber-pro');
+    var player = videojs('repro_kiamber');
 
     player.ready(function() {
-      // FUNDAMENTO: Interceptamos la petición antes de que salga al servidor
+      // Esta es la configuración técnica del repo que evita el bloqueo
       this.tech().hls.xhr.beforeRequest = function(options) {
         options.headers = options.headers || {};
-        // Esto es lo que hace que el servidor crea que somos ellos
+        // Le decimos a Vimeos que venimos de su propia web
         options.headers['Referer'] = 'https://vimeos.net/';
-        // Importante: Eliminar cualquier rastro de GitHub
-        delete options.headers['Origin']; 
         return options;
       };
 
+      // Ponemos el link de la película
       player.src({
         src: 'https://vimeos.zip/hls2/03/00007/aibs2c6nsy1h_n/index-v1-a1.m3u8?t=L8cqSIlKhFUyWWAhl-KDIy3DwsU8IHdIV9D2V9mDyVM&s=1773705159&e=43200&v=144257285&srv=s14&i=0.3&sp=0&r=e',
         type: 'application/x-mpegURL'
