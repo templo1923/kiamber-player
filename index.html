@@ -2,39 +2,42 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>KIAMBER VIP ENGINE</title>
   <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet">
-  <style>
-    body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .video-js { width: 100%; max-width: 800px; }
-  </style>
 </head>
 <body>
-
-  <video id="repro_kiamber" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls></video>
+  <video id="kiamber-engine" class="video-js vjs-default-skin vjs-16-9" controls></video>
 
   <script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
-  
-  <script src="src/videojs-contrib-hls.js"></script>
+  <script src="dist/videojs-contrib-hls.js"></script>
 
   <script>
-    var player = videojs('repro_kiamber');
+    // 1. Inicializamos el reproductor
+    var player = videojs('kiamber-engine');
 
+    // 2. CONFIGURACIÓN DE INTERCEPCIÓN (Lo que ellos hacen)
+    // Esto se ejecuta antes de cada petición de video
     player.ready(function() {
-      // Esta es la configuración técnica del repo que evita el bloqueo
-      this.tech().hls.xhr.beforeRequest = function(options) {
+      var handler = this.tech().hls.xhr;
+      
+      handler.beforeRequest = function(options) {
+        // Obligamos al navegador a decir que venimos de Vimeos
         options.headers = options.headers || {};
-        // Le decimos a Vimeos que venimos de su propia web
         options.headers['Referer'] = 'https://vimeos.net/';
+        
+        // FUNDAMENTO: Eliminamos el 'Origin' para que el servidor no vea que es GitHub
+        delete options.headers['Origin'];
+        
         return options;
       };
+    });
 
-      // Ponemos el link de la película
+    // 3. Función para cargar cualquier link (Dinámico)
+    function cargarVideo(urlM3U8) {
       player.src({
-        src: 'https://vimeos.zip/hls2/03/00007/aibs2c6nsy1h_n/index-v1-a1.m3u8?t=L8cqSIlKhFUyWWAhl-KDIy3DwsU8IHdIV9D2V9mDyVM&s=1773705159&e=43200&v=144257285&srv=s14&i=0.3&sp=0&r=e',
+        src: urlM3U8,
         type: 'application/x-mpegURL'
       });
-    });
+    }
   </script>
 </body>
 </html>
